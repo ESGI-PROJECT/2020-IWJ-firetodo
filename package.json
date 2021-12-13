@@ -1,0 +1,28 @@
+{
+  "name": "iw-j-todo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "npx snowpack dev",
+    "database": "npx json-server --watch ./data/todos.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@jadex/snowpack-plugin-tailwindcss-jit": "^0.3.0",
+    "@snowpack/plugin-postcss": "^1.4.3",
+    "autoprefixer": "^10.4.0",
+    "json-server": "^0.17.0",
+    "postcss": "^8.3.11",
+    "snowpack": "^3.8.8",
+    "tailwindcss": "^2.2.19"
+  },
+  "dependencies": {
+    "firebase": "^9.6.1",
+    "idb": "^6.1.5",
+    "lit": "^2.0.2",
+    "page": "^1.11.6"
+  }
+}
