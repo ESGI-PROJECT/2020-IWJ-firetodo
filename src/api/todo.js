@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, set, onChildAdded, onValue } from "firebase/database";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 // const baseUrl = 'http://localhost:3000';
 
@@ -17,13 +18,38 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const auth = getAuth(app);
+
+export function createUser(email, password) {
+  return createUserWithEmailAndPassword(auth, email, password)
+    .then(({ user: { uid, email } }) => {
+      set(ref(database, `/users/${uid}`), {
+        email
+      });
+    });
+}
+
+export function login(email, password) {
+  return signInWithEmailAndPassword(auth, email, password)
+    .then(({ user }) => {
+      return user;
+    });
+}
+
+export function getUser() {
+  return new Promise(resolve => {
+    onAuthStateChanged(auth, user => {
+      if (!user) resolve(false);
+      resolve(user);
+    });
+  });
+}
 
 export function createTodo(todo = {}) {
   const messages = ref(database, '/messages');
   const newKey = push(messages).key;
-  console.log(newKey);
 
-  set(ref(database, `/messages/${newKey}`), todo);
+  set(ref(database, `/messages/${newKey}`), { ...todo, plop: [ 1,2,3 ]});
 }
 
 export function getTodos() {
@@ -34,8 +60,6 @@ export function getTodos() {
     onValue(messages, (snapshots) => {
       console.log(snapshots);
       snapshots.forEach(snapshot => {
-        const data = snapshot.val();
-  
         todos.push({
           key: snapshot.key,
           data: snapshot.val()
